@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { removeLocalStorage } from "../utils/localStorage";
+import { notifyEmail } from "../utils/notifyEmail";
+import { motion } from "framer-motion";
 
-const Timer = ({ targetTime, modalShow, setModalShow }) => {
+const Timer = ({ localStorageData, targetTime, modalShow, setModalShow }) => {
   const [time, setTime] = useState({
     days: 0,
     hours: 0,
@@ -26,13 +28,18 @@ const Timer = ({ targetTime, modalShow, setModalShow }) => {
       if (distance < 0) {
         clearInterval(countdown);
         setTime({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        removeLocalStorage("formData");
         setModalShow(true);
+        notifyEmail(
+          localStorageData.email,
+          localStorageData.targetTime,
+          localStorageData.waiting,
+        );
+        removeLocalStorage("formData");
       }
     }, 1000);
 
     return () => clearInterval(countdown);
-  }, [modalShow]);
+  }, [modalShow, localStorageData]);
 
   return (
     <div className="mt-10 flex items-end justify-center gap-5 lg:gap-8">
@@ -53,7 +60,9 @@ const TimeSection = ({ label, value }) => {
   return (
     <div className="text-center">
       <h4>{label}</h4>
-      <h2 className="text-4xl font-bold lg:text-5xl">{validValue}</h2>
+      <motion.h2 className="text-4xl font-bold lg:text-5xl">
+        {validValue}
+      </motion.h2>
     </div>
   );
 };

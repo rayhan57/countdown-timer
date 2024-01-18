@@ -1,13 +1,15 @@
 import React from "react";
 
-const NotifyMe = ({ handleNotify, email, setEmail }) => {
+const NotifyMe = ({ localStorageData, handleNotify, email, setEmail }) => {
   const handleInputChange = (e) => {
     setEmail(e.target.value);
   };
 
   return (
-    <div className="mt-10">
-      <p className="mb-2 font-light">Get notified when the headset launches!</p>
+    <div className="mt-3">
+      <p className="mb-2 font-light">
+        Get notified when the {localStorageData?.waiting} launches!
+      </p>
       <form
         className="overflow-hidden rounded-full bg-white"
         onSubmit={handleNotify}

@@ -9,12 +9,14 @@ import {
   removeLocalStorage,
   setLocalStorage,
 } from "./utils/localStorage";
+import Alert from "./components/Alert";
 
 const App = () => {
   const [email, setEmail] = useState("");
-  const [showModal, setShowModal] = useState(true);
+  const [showAlert, setShowAlert] = useState(false);
   const [formData, setFormData] = useState({ waiting: "", targetTime: "" });
   const localStorageData = getLocalStorage("formData");
+  const [showModal, setShowModal] = useState(localStorageData ? false : true);
 
   const handleSet = (e) => {
     e.preventDefault();
@@ -25,10 +27,13 @@ const App = () => {
   const handleReset = () => {
     removeLocalStorage("formData");
     setShowModal(true);
+    setEmail("");
   };
 
   const handleNotify = (e) => {
     e.preventDefault();
+    setLocalStorage("formData", { ...localStorageData, email: email });
+    setShowAlert(true);
     setEmail("");
   };
 
@@ -38,7 +43,7 @@ const App = () => {
 
       <div className="flex h-screen flex-col items-center justify-center text-slate-300">
         <ModalForm
-          showModal={!localStorageData && showModal}
+          showModal={showModal}
           formData={formData}
           setFormData={setFormData}
           handleSet={handleSet}
@@ -48,6 +53,7 @@ const App = () => {
         <p className="font-light">{localStorageData?.waiting} coming soon</p>
 
         <Timer
+          localStorageData={localStorageData}
           targetTime={localStorageData?.targetTime}
           modalShow={showModal}
           setModalShow={setShowModal}
@@ -60,7 +66,10 @@ const App = () => {
           <LuTimerReset size={16} /> Reset
         </button>
 
+        <Alert showAlert={showAlert} setShowAlert={setShowAlert} />
+
         <NotifyMe
+          localStorageData={localStorageData}
           handleNotify={handleNotify}
           email={email}
           setEmail={setEmail}
